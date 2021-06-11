@@ -9,6 +9,15 @@ enum class CodigoHttp(val codigo: Int) {
 }
 
 class ServidorWeb() {
+  val modulos = mutableListOf<Modulo>()
+
+  fun agregarModulo(modulo : Modulo){
+      modulos.add(modulo)
+  }
+
+  fun quitarModulo(modulo: Modulo){
+    modulos.remove(modulo)
+  }
 
   fun atenderPedido(pedido: Pedido): Respuesta {
     return pedido.verificarProtocolo()
