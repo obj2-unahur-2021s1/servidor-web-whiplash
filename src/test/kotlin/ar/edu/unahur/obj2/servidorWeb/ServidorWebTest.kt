@@ -11,6 +11,12 @@ class ServidorWebTest : DescribeSpec({
     val otroPedido = Pedido("192.168.1.10", "ftp://juampi.com/virus.exe", LocalDateTime.now())
 
 
+    it("probando protocolo"){
+      unPedido.protocolo().shouldBe("http")
+
+    }
+
+
     it("Devuelve ok si el protocolo es HTTP"){
       val respuestaObtenida = servidorWeb.atenderPedido(unPedido)
       respuestaObtenida.codigo.shouldBe(CodigoHttp.OK)
