@@ -19,9 +19,57 @@ class ServidorWeb() {
     modulos.remove(modulo)
   }
 
-  fun atenderPedido(pedido: Pedido): Respuesta {
-    return pedido.verificarProtocolo()
+  fun verificarProtocolo(pedido : Pedido) : Respuesta {
+    return if (pedido.protocolo() != "http")
+      Respuesta(CodigoHttp.NOT_IMPLEMENTED, "", 10, pedido)
+    else
+      Respuesta(CodigoHttp.OK, "hola, esta es una respuesta del servidor", 12, pedido)
   }
+
+  /*
+  fun filtrarNulos(pedido: Pedido) : Modulo? {
+    return modulos.find{it.puedeTrabajar(pedido.extension()) }
+  }
+  */
+
+
+  // NULL - verificar esto
+  fun buscarModuloQuePuedaTrabajarCon(pedido : Pedido) : Modulo {
+    TODO() //return modulos.any{it.puedeTrabajar(pedido.extension())}
+  }
+
+
+  fun noHayModuloQuePuedaTrabajar(pedido: Pedido) : Boolean{
+    return modulos.find{it.puedeTrabajar(pedido.extension())} == null
+  }
+
+
+  fun atenderPedido(pedido: Pedido): Respuesta {
+    val respuestaObtenida = this.verificarProtocolo(pedido)
+
+    return if (respuestaObtenida.codigo != CodigoHttp.OK){
+      respuestaObtenida
+    }else{
+      if (modulos.isNotEmpty()){
+        if (this.noHayModuloQuePuedaTrabajar(pedido)){
+          Respuesta(CodigoHttp.NOT_FOUND, "", 10, pedido)
+        }else{
+          this.buscarModuloQuePuedaTrabajarCon(pedido).respuestaDelModulo(pedido)
+        }
+      }else{
+        verificarProtocolo(pedido)
+      }
+    }
+
+
+
+
+
+
+  }
+
+
+
 
 }
 

@@ -1,16 +1,11 @@
 package ar.edu.unahur.obj2.servidorWeb
 
-abstract class Modulo(extensiones:List<String>, texto : String, tiempo : Int ) {
+class Modulo(val extensiones:List<String>, val texto : String, val tiempo : Int ) {
 
-     fun puedeTrabajar(extension:String){
+     fun puedeTrabajar(extension: String) = extensiones.contains(extension)
 
-     }
-
-
-}
-
-class ModuloImagenes(extensiones: List<String>, texto: String, tiempo: Int) : Modulo(extensiones, texto, tiempo) {
-
+     fun respuestaDelModulo(pedido:Pedido): Respuesta = Respuesta(CodigoHttp.OK,texto,tiempo,pedido)
 
 
 }
+
