@@ -10,6 +10,7 @@ enum class CodigoHttp(val codigo: Int) {
 
 class ServidorWeb() {
   val modulos = mutableListOf<Modulo>()
+  val analizadores = mutableListOf<Analizador>()
 
   fun agregarModulo(modulo : Modulo){
       modulos.add(modulo)
@@ -17,6 +18,14 @@ class ServidorWeb() {
 
   fun quitarModulo(modulo: Modulo){
     modulos.remove(modulo)
+  }
+
+  fun agregarAnalizador(analizador : Analizador){
+    analizadores.add(analizador)
+  }
+
+  fun quitarAnalizador(analizador:Analizador){
+    analizadores.remove(analizador)
   }
 
   fun listaDeModulosNoEstaVacia() = modulos.isNotEmpty()
@@ -28,7 +37,6 @@ class ServidorWeb() {
       Respuesta(CodigoHttp.OK, "hola, esta es una respuesta del servidor", 12, pedido)
   }
 
-  // NULL - verificar esto
   fun buscarModuloQuePuedaTrabajarCon(pedido : Pedido) : Modulo{
     return modulos.find{it.puedeTrabajar(pedido.extension())}!!
   }
@@ -60,9 +68,6 @@ class ServidorWeb() {
     }
 
   }
-
-
-
 
 }
 
