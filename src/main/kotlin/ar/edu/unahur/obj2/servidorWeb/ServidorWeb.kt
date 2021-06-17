@@ -19,6 +19,8 @@ class ServidorWeb() {
     modulos.remove(modulo)
   }
 
+  fun listaDeModulosNoEstaVacia() = modulos.isNotEmpty()
+
   fun verificarProtocolo(pedido : Pedido) : Respuesta {
     return if (pedido.protocolo() != "http")
       Respuesta(CodigoHttp.NOT_IMPLEMENTED, "", 10, pedido)
@@ -26,45 +28,36 @@ class ServidorWeb() {
       Respuesta(CodigoHttp.OK, "hola, esta es una respuesta del servidor", 12, pedido)
   }
 
-  /*
-  fun filtrarNulos(pedido: Pedido) : Modulo? {
-    return modulos.find{it.puedeTrabajar(pedido.extension()) }
-  }
-  */
-
-
   // NULL - verificar esto
-  fun buscarModuloQuePuedaTrabajarCon(pedido : Pedido) : Modulo {
-    TODO() //return modulos.any{it.puedeTrabajar(pedido.extension())}
+  fun buscarModuloQuePuedaTrabajarCon(pedido : Pedido) : Modulo{
+    return modulos.find{it.puedeTrabajar(pedido.extension())}!!
+  }
+
+  fun existeModuloQuePuedaTrabajarCon(pedido: Pedido) : Boolean{
+    return modulos.any{it.puedeTrabajar(pedido.extension())}
+  }
+
+  fun respuestaDelModulo(pedido : Pedido) : Respuesta{
+    return if(!this.existeModuloQuePuedaTrabajarCon(pedido)){
+      Respuesta(CodigoHttp.NOT_FOUND,"",10,pedido)
+    }else{
+      this.buscarModuloQuePuedaTrabajarCon(pedido).respuestaDelModulo(pedido)
+    }
   }
 
 
-  fun noHayModuloQuePuedaTrabajar(pedido: Pedido) : Boolean{
-    return modulos.find{it.puedeTrabajar(pedido.extension())} == null
-  }
-
-
-  fun atenderPedido(pedido: Pedido): Respuesta {
+  fun atenderPedido(pedido: Pedido) : Respuesta{
     val respuestaObtenida = this.verificarProtocolo(pedido)
 
     return if (respuestaObtenida.codigo != CodigoHttp.OK){
       respuestaObtenida
     }else{
-      if (modulos.isNotEmpty()){
-        if (this.noHayModuloQuePuedaTrabajar(pedido)){
-          Respuesta(CodigoHttp.NOT_FOUND, "", 10, pedido)
-        }else{
-          this.buscarModuloQuePuedaTrabajarCon(pedido).respuestaDelModulo(pedido)
-        }
+      if (this.listaDeModulosNoEstaVacia()){
+        this.respuestaDelModulo(pedido)
       }else{
         verificarProtocolo(pedido)
       }
     }
-
-
-
-
-
 
   }
 
