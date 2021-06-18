@@ -15,8 +15,21 @@ class DeteccionDeDemoraEnRespuesta(val demoraMinima: Int) : Analizador {
         }
     }
 
-    fun cantidadDeRespuestasDemoradas(modulo:Modulo) : Int {
-        TODO("implemtar???")
+    fun cantidadDeRespuestasDemoradas() = respuestasDemoradas
+}
+
+class IpsSospechosas(val listaDeIps : List<String>) : Analizador{
+
+    override fun analizar(respuesta: Respuesta,modulo: Modulo){
+        TODO()
+    }
+
+}
+
+class Estadisticas() : Analizador{
+
+    override fun analizar(respuesta: Respuesta, modulo: Modulo) {
+        TODO("Not yet implemented")
     }
 }
 

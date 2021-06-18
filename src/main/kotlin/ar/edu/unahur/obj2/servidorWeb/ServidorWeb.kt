@@ -59,54 +59,26 @@ class ServidorWeb() {
     analizadores.forEach{it.analizar(respuestaFinal,modulo)}
 
 
-
   fun atenderPedido(pedido: Pedido) :Respuesta{
     lateinit var respuestaObtenida : Respuesta
     lateinit var moduloSeleccionado : Modulo
 
-    if (pedido.protocolo() != "http") {
-      respuestaObtenida = Respuesta(CodigoHttp.NOT_IMPLEMENTED, "", 10, pedido)
-    }
-    else {
-      respuestaObtenida = Respuesta(CodigoHttp.OK, "hola, esta es una respuesta del servidor", 12, pedido)
-    }
+    respuestaObtenida = this.verificarProtocolo(pedido)
 
     if (this.listaDeModulosNoEstaVacia()){
-      moduloSeleccionado = this.buscarModuloQuePuedaTrabajarCon(pedido)
+      if(this.existeModuloQuePuedaTrabajarCon(pedido)) {
+        moduloSeleccionado = this.buscarModuloQuePuedaTrabajarCon(pedido)
+      }
       respuestaObtenida = this.respuestaDelModulo(pedido)
     }
 
-    return respuestaObtenida
-  }
-
-/*
-  fun atenderPedido(pedido: Pedido) : Respuesta{
-    val respuestaObtenida = this.verificarProtocolo(pedido)
-    val moduloSeleccionado = this.buscarModuloQuePuedaTrabajarCon(pedido)
-
-    return if (respuestaObtenida.codigo != CodigoHttp.OK){
-      respuestaObtenida
-    }else{
-      if (this.listaDeModulosNoEstaVacia()){
-        this.respuestaDelModulo(pedido)
-      }else{
-        verificarProtocolo(pedido)
-      }
+    if(this.listaDeAnalizadoresNoEstaVacia() && this.listaDeModulosNoEstaVacia()){
+      this.mandarAAnalizar(respuestaObtenida, moduloSeleccionado)
     }
 
-
     return respuestaObtenida
-    if (this.listaDeAnalizadoresNoEstaVacia()){
-      this.mandarAAnalizar(respuestaFinal)
-      }
 
   }
-
-  */
-
-
-
-
 
 
 }

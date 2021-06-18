@@ -61,7 +61,35 @@ class ServidorWebTest : DescribeSpec({
       respuestaObtenida.pedido.shouldBe(unPedidoConImagen)
     }
 
+  }
+
+  describe("Analizadores"){
+    val servidorWeb = ServidorWeb()
+    val unPedidoConImagen = Pedido("192.168.1.102", "http://www.pipo.com.ar/imagen.jpg",LocalDateTime.now())
+    val otroPedidoConTexto = Pedido("192.168.1.10", "http://juampi.com.ar/virus.doc", LocalDateTime.now())
+    val unPedidoDeVideo = Pedido("192.168.1.103", "http://bardo.com.ar/keloke.avi", LocalDateTime.now())
+    val moduloDeImagen = Modulo(listOf("png","jpg","gif","raw"), "soy un modulo de imagen", 50)
+    val moduloDeTexto = Modulo(listOf("txt","doc", "odt"), "soy un modulo de binarios", 9)
+    val moduloDeVideo = Modulo(listOf("avi","3gp","mkv","mpeg"), "soy un modulo de video", 12)
+    val analizadorDeDemora = DeteccionDeDemoraEnRespuesta(10)
+
+    servidorWeb.agregarModulo(moduloDeTexto)
+    servidorWeb.agregarModulo(moduloDeVideo)
+    servidorWeb.agregarModulo(moduloDeImagen)
+    servidorWeb.agregarAnalizador(analizadorDeDemora)
+
+    servidorWeb.atenderPedido(unPedidoConImagen)
+    servidorWeb.atenderPedido(otroPedidoConTexto)
+    servidorWeb.atenderPedido(unPedidoDeVideo)
+
+
+    it("probando analizador deteccion de demora en respuesta"){
+
+      analizadorDeDemora.cantidadDeRespuestasDemoradas().shouldBe(2)
+
+    }
 
   }
+
 
 })
