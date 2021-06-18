@@ -13,7 +13,7 @@ class ServidorWeb() {
   val analizadores = mutableListOf<Analizador>()
 
   fun agregarModulo(modulo : Modulo){
-      modulos.add(modulo)
+    modulos.add(modulo)
   }
 
   fun quitarModulo(modulo: Modulo){
@@ -29,6 +29,8 @@ class ServidorWeb() {
   }
 
   fun listaDeModulosNoEstaVacia() = modulos.isNotEmpty()
+
+  fun listaDeAnalizadoresNoEstaVacia() = analizadores.isNotEmpty()
 
   fun verificarProtocolo(pedido : Pedido) : Respuesta {
     return if (pedido.protocolo() != "http")
@@ -53,9 +55,34 @@ class ServidorWeb() {
     }
   }
 
+  fun mandarAAnalizar(respuestaFinal: Respuesta, modulo : Modulo) =
+    analizadores.forEach{it.analizar(respuestaFinal,modulo)}
 
+
+
+  fun atenderPedido(pedido: Pedido) :Respuesta{
+    lateinit var respuestaObtenida : Respuesta
+    lateinit var moduloSeleccionado : Modulo
+
+    if (pedido.protocolo() != "http") {
+      respuestaObtenida = Respuesta(CodigoHttp.NOT_IMPLEMENTED, "", 10, pedido)
+    }
+    else {
+      respuestaObtenida = Respuesta(CodigoHttp.OK, "hola, esta es una respuesta del servidor", 12, pedido)
+    }
+
+    if (this.listaDeModulosNoEstaVacia()){
+      moduloSeleccionado = this.buscarModuloQuePuedaTrabajarCon(pedido)
+      respuestaObtenida = this.respuestaDelModulo(pedido)
+    }
+
+    return respuestaObtenida
+  }
+
+/*
   fun atenderPedido(pedido: Pedido) : Respuesta{
     val respuestaObtenida = this.verificarProtocolo(pedido)
+    val moduloSeleccionado = this.buscarModuloQuePuedaTrabajarCon(pedido)
 
     return if (respuestaObtenida.codigo != CodigoHttp.OK){
       respuestaObtenida
@@ -67,7 +94,20 @@ class ServidorWeb() {
       }
     }
 
+
+    return respuestaObtenida
+    if (this.listaDeAnalizadoresNoEstaVacia()){
+      this.mandarAAnalizar(respuestaFinal)
+      }
+
   }
+
+  */
+
+
+
+
+
 
 }
 
